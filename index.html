@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mario Dice Quest</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; text-align: center; }
+        .board { height: 30px; background: lightgray; border-radius: 15px; position: relative; }
+        .player { position: absolute; top: 50%; transform: translateY(-50%); transition: left 0.5s; }
+        .dice { font-size: 24px; cursor: pointer; margin: 0 5px; }
+        button { padding: 10px 20px; margin-top: 20px; font-size: 16px; cursor: pointer; }
+        #message { font-size: 20px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<h1>Mario Dice Quest</h1>
+<p>Objective: Be the first to rescue Princess Peach by reaching 100 points!</p>
+
+<div class="board">
+    <span class="player" id="player1" style="left: 0%;">🏃</span>
+    <span class="player" id="player2" style="left: 0%;">🏃‍♀️</span>
+</div>
+
+<div id="dice-container">
+    <i class="fas fa-dice-one dice" id="red-dice"></i>
+    <i class="fas fa-dice-one dice" id="yellow-dice"></i>
+    <i class="fas fa-dice-one dice" id="blue-dice"></i>
+    <i class="fas fa-dice-one dice" id="green-dice"></i>
+    <i class="fas fa-dice-one dice" id="black-dice"></i>
+</div>
+
+<button onclick="rollDice()">Roll Dice</button>
+
+<div id="message"></div>
+
+<script>
+    let gameState = {
+        player_positions: [0, 0],
+        scores: [0, 0],
+        coins: [0, 0],
+        current_player: 0,
+        dice_results: [],
+        message: ""
+    };
+
+    function updateBoard() {
+        const boardWidth = document.querySelector('.board').offsetWidth;
+        document.getElementById('player1').style.left = (gameState.player_positions[0] / 100) * boardWidth + 'px';
+        document.getElementById('player2').style.left = (gameState.player_positions[1] / 100) * boardWidth + 'px';
+        document.getElementById('message').textContent = gameState.message;
+    }
+
+    function rollDice() {
+        gameState.message = "Player " + (gameState.current_player + 1) + " rolled:";
+        let diceColors = ["red", "yellow", "blue", "green", "black"];
+        gameState.dice_results = diceColors.map(color => Math.floor(Math.random() * 6) + 1);
+        
+        gameState.dice_results.forEach((roll, index) => {
+            document.getElementById(diceColors[index] + '-dice').className = 'fas dice fa-dice-' + roll;
+
+            // Game logic based on the color of the dice and its roll
+            switch(diceColors[index]) {
+                case "red":
+                    if (roll <= 2) gameState.player_positions[gameState.current_player] += 1;
+                    else if (roll <= 4) gameState.player_positions[gameState.current_player] += 2;
+                    // Power-ups and bonus coins are ignored for simplicity in this prototype
+                    break;
+                case "yellow":
+                    if (roll <= 5) gameState.coins[gameState.current_player] += roll;
+                    gameState.scores[gameState.current_player] = Math.floor(gameState.coins[gameState.current_player] / 10) * 5;
+                    break;
+                case "blue":
+                    if (roll >= 4 && roll <= 5 && gameState.current_player === 0) gameState.current_player = 1;
+                    else if (roll >= 4 && roll <= 5 && gameState.current_player === 1) gameState.current_player = 0;
+                    break;
+                case "green":
+                    if (roll <= 2) gameState.player_positions[gameState.current_player] += 1;
+                    break;
+            }
+
+            if (gameState.scores[gameState.current_player] >= 100) {
+                gameState.message = "Player " + (gameState.current_player + 1) + " wins!";
+            } else {
+                gameState.current_player = 1 - gameState.current_player;
+            }
+        });
+
+        updateBoard();
+    }
+
+    updateBoard();
+</script>
+
+</body>
+</html>
