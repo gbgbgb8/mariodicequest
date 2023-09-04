@@ -90,6 +90,7 @@
     }
 
     function showDiceFace(color, roll) {
+        document.querySelectorAll(`#${color}-dice .dice`).forEach(dice => dice.style.display = 'none');
         document.querySelector(`#${color}-dice .fa-dice-${roll}`).style.display = 'inline-block';
     }
 
@@ -109,7 +110,6 @@
         gameState.dice_results.forEach((roll, index) => {
             showDiceFace(diceColors[index], roll);
             diceResultsMessage += diceColors[index].charAt(0).toUpperCase() + diceColors[index].slice(1) + ": " + roll + "\n";
-
             switch(diceColors[index]) {
                 case "red":
                     if (roll <= 2) gameState.player_positions[gameState.current_player] += 1;
@@ -125,22 +125,40 @@
                     break;
                 case "green":
                     if (roll <= 2) gameState.player_positions[gameState.current_player] += 1;
+                    else if (roll <= 4) {
+                        gameState.current_player = 1 - gameState.current_player;
+                        gameState.player_positions[gameState.current_player] += 3;
+                    }
+                    else if (roll === 5) {
+                        gameState.current_player = 1 - gameState.current_player;
+                        gameState.player_positions[gameState.current_player] += 5;
+                    }
+                    else if (roll === 6) {
+                        let temp = gameState.player_positions[0];
+                        gameState.player_positions[0] = gameState.player_positions[1];
+                        gameState.player_positions[1] = temp;
+                    }
+                    break;
+                case "black":
+                    if (roll <= 3) {}
+                    else if (roll <= 5) gameState.player_positions[gameState.current_player] -= 1;
+                    else if (roll === 6) {
+                        gameState.coins[gameState.current_player] = Math.floor(gameState.coins[gameState.current_player] / 2);
+                        gameState.scores[gameState.current_player] = Math.floor(gameState.coins[gameState.current_player] / 10) * 5;
+                    }
                     break;
             }
-
-            if (gameState.scores[gameState.current_player] >= 100) {
+            if (gameState.player_positions[gameState.current_player] >= 100) {
                 gameState.message = "Player " + (gameState.current_player + 1) + " wins!";
+                document.querySelector('button').disabled = true;
             } else {
                 gameState.current_player = 1 - gameState.current_player;
             }
         });
-
         document.getElementById('dice-results').textContent = diceResultsMessage;
         updateBoard();
     }
-
     updateBoard();
 </script>
-
 </body>
 </html>
