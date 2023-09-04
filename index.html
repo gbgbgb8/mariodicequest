@@ -12,6 +12,12 @@
         .dice { font-size: 24px; cursor: pointer; margin: 0 5px; }
         button { padding: 10px 20px; margin-top: 20px; font-size: 16px; cursor: pointer; }
         #message { font-size: 20px; margin-top: 20px; }
+        #dice-results { font-size: 16px; margin-top: 20px; }
+        #red-dice { color: red; }
+        #yellow-dice { color: yellow; }
+        #blue-dice { color: blue; }
+        #green-dice { color: green; }
+        #black-dice { color: black; }
     </style>
 </head>
 <body>
@@ -34,6 +40,7 @@
 
 <button onclick="rollDice()">Roll Dice</button>
 
+<div id="dice-results"></div>
 <div id="message"></div>
 
 <script>
@@ -58,15 +65,15 @@
         let diceColors = ["red", "yellow", "blue", "green", "black"];
         gameState.dice_results = diceColors.map(color => Math.floor(Math.random() * 6) + 1);
         
+        let diceResultsMessage = "";
         gameState.dice_results.forEach((roll, index) => {
             document.getElementById(diceColors[index] + '-dice').className = 'fas dice fa-dice-' + roll;
+            diceResultsMessage += diceColors[index].charAt(0).toUpperCase() + diceColors[index].slice(1) + ": " + roll + "\\n";
 
-            // Game logic based on the color of the dice and its roll
             switch(diceColors[index]) {
                 case "red":
                     if (roll <= 2) gameState.player_positions[gameState.current_player] += 1;
                     else if (roll <= 4) gameState.player_positions[gameState.current_player] += 2;
-                    // Power-ups and bonus coins are ignored for simplicity in this prototype
                     break;
                 case "yellow":
                     if (roll <= 5) gameState.coins[gameState.current_player] += roll;
@@ -88,6 +95,7 @@
             }
         });
 
+        document.getElementById('dice-results').textContent = diceResultsMessage;
         updateBoard();
     }
 
