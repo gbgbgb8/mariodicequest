@@ -20,179 +20,119 @@ function rollDice() {
     updateStats();
     displayResults(redResult, yellowResult, blueResult, greenResult, blackResult);
     currentPlayer = (currentPlayer + 1) % 2;
+    let emoji = (currentPlayer === 0) ? "🔴" : "🔵";
+    document.getElementById('currentPlayerTurn').innerText = `Player ${currentPlayer + 1}'s Turn ${emoji}`;
+    document.getElementById('rollExplanation').innerHTML = '';
 }
 
 function interpretRedDice(result, player) {
+    let explanation = "Red (Mario): ";
     switch (result) {
         case 1:
         case 2:
             player.score += 1;
+            explanation += "Move 1 space. ";
             if (player.coins >= 3) {
-                askForDecision([
-                    { value: 'move', text: 'Move an additional space' },
-                    { value: 'stay', text: 'Stay' }
-                ], decision => {
-                    if (decision === 'move') {
-                        player.score += 1;
-                        player.coins -= 3;
-                    }
-                    updateStats();
-                });
+                explanation += "Option to spend 3 coins to move an additional space.";
             }
             break;
         case 3:
         case 4:
             player.score += 2;
+            explanation += "Move 2 spaces. ";
             if (player.coins >= 2) {
-                askForDecision([
-                    { value: 'spend', text: 'Spend 2 coins to prevent an opponent from moving next turn' },
-                    { value: 'stay', text: 'Stay' }
-                ], decision => {
-                    if (decision === 'spend') {
-                        player.coins -= 2;
-                    }
-                    updateStats();
-                });
+                explanation += "Option to spend 2 coins to prevent an opponent from moving next turn.";
             }
             break;
         case 5:
-            askForDecision([
-                { value: 'Mushroom', text: 'Mushroom' },
-                { value: 'Fire Flower', text: 'Fire Flower' },
-                { value: 'Feather', text: 'Feather' }
-            ], decision => {
-                player.powerups.push(decision);
-                updateStats();
-            });
+            explanation += "Gain a power-up.";
             break;
         case 6:
             player.coins += roll(6);
+            explanation += "Roll the Yellow dice again for bonus coins.";
             break;
     }
+    document.getElementById('rollExplanation').innerHTML += explanation + "<br>";
 }
 
 function interpretYellowDice(result, player) {
+    let explanation = "Yellow (Coins): ";
     if (result >= 1 && result <= 4) {
         player.coins += result;
+        explanation += `Collect ${result} coins.`;
     } else {
         player.coins += 3;
+        explanation += "Steal up to 3 coins from an opponent.";
     }
+    document.getElementById('rollExplanation').innerHTML += explanation + "<br>";
 }
 
 function interpretBlueDice(result, player) {
+    let explanation = "Blue (Water): ";
     switch (result) {
         case 4:
         case 5:
             if (player.coins >= 2) {
-                askForDecision([
-                    { value: 'spend', text: 'Spend 2 coins to protect yourself from the Strong Current' },
-                    { value: 'stay', text: 'Stay' }
-                ], decision => {
-                    if (decision === 'spend') {
-                        player.coins -= 2;
-                    } else {
-                        player.score -= 1;
-                    }
-                    updateStats();
-                });
+                explanation += "Strong Current. Option to spend 2 coins to protect yourself.";
+            } else {
+                player.score -= 1;
+                explanation += "Strong Current. Lost 1 space.";
             }
             break;
         case 6:
-            askForDecision([
-                { value: 'push', text: 'Push yourself back by 2 spaces' },
-                { value: 'stay', text: 'Stay' }
-            ], decision => {
-                if (decision === 'push') {
-                    player.score -= 2;
-                }
-                updateStats();
-            });
+            explanation += "Blue Shell. Choose to push back any player by 2 spaces.";
+            break;
+        default:
+            explanation += "Calm Waters. No effect.";
             break;
     }
+    document.getElementById('rollExplanation').innerHTML += explanation + "<br>";
 }
 
 function interpretGreenDice(result, player) {
+    let explanation = "Green (Pipes): ";
     switch (result) {
         case 1:
         case 2:
-            askForDecision([
-                { value: 'move', text: 'Move forward by 1 space' },
-                { value: 'collect', text: 'Collect 3 coins' }
-            ], decision => {
-                if (decision === 'move') {
-                    player.score += 1;
-                } else {
-                    player.coins += 3;
-                }
-                updateStats();
-            });
+            explanation += "Short pipe. Option to move forward 1 space or collect 3 coins.";
             break;
         case 3:
         case 4:
-            askForDecision([
-                { value: 'move', text: 'Skip your next turn and then move 3 spaces' },
-                { value: 'collect', text: 'Gain a power-up' }
-            ], decision => {
-                if (decision === 'move') {
-                    player.score += 3;
-                } else {
-                    player.powerups.push('Choose a power-up');
-                }
-                updateStats();
-            });
+            explanation += "Medium pipe. Option to skip your next turn and then move 3 spaces or gain a power-up.";
             break;
         case 5:
-            askForDecision([
-                { value: 'move', text: 'Skip 2 turns and then move 5 spaces' },
-                { value: 'collect', text: 'Gain 2 power-ups' }
-            ], decision => {
-                if (decision === 'move') {
-                    player.score += 5;
-                } else {
-                    player.powerups.push('Choose a power-up', 'Choose another power-up');
-                }
-                updateStats();
-            });
+            explanation += "Long pipe. Option to skip 2 turns and then move 5 spaces or gain 2 power-ups.";
             break;
         case 6:
             player.score = 0;
+            explanation += "Warp pipe. Reset score to 0.";
             break;
     }
+    document.getElementById('rollExplanation').innerHTML += explanation + "<br>";
 }
 
 function interpretBlackDice(result, player) {
+    let explanation = "Black (Bowser): ";
     switch (result) {
         case 1:
         case 2:
         case 3:
             if (player.heldBlackDice === null) {
                 player.heldBlackDice = result;
+                explanation += "Plan ahead. Held the Black dice result for a future turn.";
+            } else {
+                explanation += "Plan ahead. Already holding a Black dice result.";
             }
             break;
         case 4:
         case 5:
-            askForDecision([
-                { value: 'move', text: 'Move back by 1 space' },
-                { value: 'stay', text: 'Stay' }
-            ], decision => {
-                if (decision === 'move') {
-                    player.score -= 1;
-                }
-                updateStats();
-            });
+            explanation += "Bowser's Minion. Option to go back 1 space or force another player to go back 1 space.";
             break;
         case 6:
-            askForDecision([
-                { value: 'lose', text: 'Lose half your coins' },
-                { value: 'stay', text: 'Stay' }
-            ], decision => {
-                if (decision === 'lose') {
-                    player.coins = Math.floor(player.coins / 2);
-                }
-                updateStats();
-            });
+            explanation += "Bowser's Wrath. Lose half your coins or choose another player to lose half of theirs.";
             break;
     }
+    document.getElementById('rollExplanation').innerHTML += explanation + "<br>";
 }
 
 function updateStats() {
