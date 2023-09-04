@@ -13,6 +13,8 @@
         button { padding: 10px 20px; margin-top: 20px; font-size: 16px; cursor: pointer; }
         #message { font-size: 20px; margin-top: 20px; }
         #dice-results { font-size: 16px; margin-top: 20px; white-space: pre-line; }
+        .dice-color { display: inline-block; position: relative; }
+        .dice-color i { position: absolute; }
     </style>
 </head>
 <body>
@@ -26,11 +28,46 @@
 </div>
 
 <div id="dice-container">
-    <i class="fas fa-dice-one dice" id="red-dice" style="color: red;"></i>
-    <i class="fas fa-dice-one dice" id="yellow-dice" style="color: yellow;"></i>
-    <i class="fas fa-dice-one dice" id="blue-dice" style="color: blue;"></i>
-    <i class="fas fa-dice-one dice" id="green-dice" style="color: green;"></i>
-    <i class="fas fa-dice-one dice" id="black-dice" style="color: black;"></i>
+    <div class="dice-color" style="color: red;" id="red-dice">
+        <i class="fas fa-dice-one dice"></i>
+        <i class="fas fa-dice-two dice"></i>
+        <i class="fas fa-dice-three dice"></i>
+        <i class="fas fa-dice-four dice"></i>
+        <i class="fas fa-dice-five dice"></i>
+        <i class="fas fa-dice-six dice"></i>
+    </div>
+    <div class="dice-color" style="color: yellow;" id="yellow-dice">
+        <i class="fas fa-dice-one dice"></i>
+        <i class="fas fa-dice-two dice"></i>
+        <i class="fas fa-dice-three dice"></i>
+        <i class="fas fa-dice-four dice"></i>
+        <i class="fas fa-dice-five dice"></i>
+        <i class="fas fa-dice-six dice"></i>
+    </div>
+    <div class="dice-color" style="color: blue;" id="blue-dice">
+        <i class="fas fa-dice-one dice"></i>
+        <i class="fas fa-dice-two dice"></i>
+        <i class="fas fa-dice-three dice"></i>
+        <i class="fas fa-dice-four dice"></i>
+        <i class="fas fa-dice-five dice"></i>
+        <i class="fas fa-dice-six dice"></i>
+    </div>
+    <div class="dice-color" style="color: green;" id="green-dice">
+        <i class="fas fa-dice-one dice"></i>
+        <i class="fas fa-dice-two dice"></i>
+        <i class="fas fa-dice-three dice"></i>
+        <i class="fas fa-dice-four dice"></i>
+        <i class="fas fa-dice-five dice"></i>
+        <i class="fas fa-dice-six dice"></i>
+    </div>
+    <div class="dice-color" style="color: black;" id="black-dice">
+        <i class="fas fa-dice-one dice"></i>
+        <i class="fas fa-dice-two dice"></i>
+        <i class="fas fa-dice-three dice"></i>
+        <i class="fas fa-dice-four dice"></i>
+        <i class="fas fa-dice-five dice"></i>
+        <i class="fas fa-dice-six dice"></i>
+    </div>
 </div>
 
 <button onclick="rollDice()">Roll Dice</button>
@@ -48,6 +85,14 @@
         message: ""
     };
 
+    function hideAllDiceFaces() {
+        document.querySelectorAll('.dice').forEach(dice => dice.style.display = 'none');
+    }
+
+    function showDiceFace(color, roll) {
+        document.querySelector(`#${color}-dice .fa-dice-${roll}`).style.display = 'inline-block';
+    }
+
     function updateBoard() {
         const boardWidth = document.querySelector('.board').offsetWidth;
         document.getElementById('player1').style.left = (gameState.player_positions[0] / 100) * boardWidth + 'px';
@@ -56,13 +101,13 @@
     }
 
     function rollDice() {
+        hideAllDiceFaces();
         let diceColors = ["red", "yellow", "blue", "green", "black"];
         gameState.dice_results = diceColors.map(color => Math.floor(Math.random() * 6) + 1);
         
         let diceResultsMessage = "";
         gameState.dice_results.forEach((roll, index) => {
-            let diceElement = document.getElementById(diceColors[index] + '-dice');
-            diceElement.className = `fas fa-dice-${roll} dice`;
+            showDiceFace(diceColors[index], roll);
             diceResultsMessage += diceColors[index].charAt(0).toUpperCase() + diceColors[index].slice(1) + ": " + roll + "\n";
 
             switch(diceColors[index]) {
