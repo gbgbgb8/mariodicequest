@@ -1,209 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mario Dice Quest</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .board {
-            height: 30px;
-            background: lightgray;
-            border-radius: 15px;
-            position: relative;
-        }
-
-        .player {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            transition: left 0.5s;
-        }
-
-        .dice {
-            font-size: 24px;
-            cursor: pointer;
-            margin: 0 5px;
-        }
-
-        button {
-            padding: 10px 20px;
-            margin-top: 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        #message {
-            font-size: 20px;
-            margin-top: 20px;
-        }
-
-        #dice-results {
-            font-size: 16px;
-            margin-top: 20px;
-            white-space: pre-line;
-        }
-
-        .dice-color {
-            display: inline-block;
-            position: relative;
-        }
-
-        .dice-color i {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-
     <h1>Mario Dice Quest</h1>
-    <p>Objective: Be the first to rescue Princess Peach by reaching 100 points!</p>
-
-    <div class="board">
-        <span class="player" id="player1" style="left: 0%;">🏃</span>
-        <span class="player" id="player2" style="left: 0%;">🏃‍♀️</span>
+    <div id="player1Stats">
+        Player 1 - 
+        Score: <span id="score1">0</span> |
+        Coins: <span id="coins1">3</span> |
+        Power-ups: <span id="powerups1">None</span>
     </div>
-
-    <div id="dice-container">
-        <div class="dice-color" style="color: red;" id="red-dice">
-            <i class="fas fa-dice-one dice"></i>
-            <i class="fas fa-dice-two dice"></i>
-            <i class="fas fa-dice-three dice"></i>
-            <i class="fas fa-dice-four dice"></i>
-            <i class="fas fa-dice-five dice"></i>
-            <i class="fas fa-dice-six dice"></i>
-        </div>
-        <div class="dice-color" style="color: yellow;" id="yellow-dice">
-            <i class="fas fa-dice-one dice"></i>
-            <i class="fas fa-dice-two dice"></i>
-            <i class="fas fa-dice-three dice"></i>
-            <i class="fas fa-dice-four dice"></i>
-            <i class="fas fa-dice-five dice"></i>
-            <i class="fas fa-dice-six dice"></i>
-        </div>
-        <div class="dice-color" style="color: blue;" id="blue-dice">
-            <i class="fas fa-dice-one dice"></i>
-            <i class="fas fa-dice-two dice"></i>
-            <i class="fas fa-dice-three dice"></i>
-            <i class="fas fa-dice-four dice"></i>
-            <i class="fas fa-dice-five dice"></i>
-            <i class="fas fa-dice-six dice"></i>
-        </div>
-        <div class="dice-color" style="color: green;" id="green-dice">
-            <i class="fas fa-dice-one dice"></i>
-            <i class="fas fa-dice-two dice"></i>
-            <i class="fas fa-dice-three dice"></i>
-            <i class="fas fa-dice-four dice"></i>
-            <i class="fas fa-dice-five dice"></i>
-            <i class="fas fa-dice-six dice"></i>
-        </div>
-        <div class="dice-color" style="color: black;" id="black-dice">
-            <i class="fas fa-dice-one dice"></i>
-            <i class="fas fa-dice-two dice"></i>
-            <i class="fas fa-dice-three dice"></i>
-            <i class="fas fa-dice-four dice"></i>
-            <i class="fas fa-dice-five dice"></i>
-            <i class="fas fa-dice-six dice"></i>
-        </div>
+    <div id="player2Stats">
+        Player 2 - 
+        Score: <span id="score2">0</span> |
+        Coins: <span id="coins2">3</span> |
+        Power-ups: <span id="powerups2">None</span>
     </div>
-
-    <button onclick="rollDice()">Roll Dice</button>
-    <button onclick="restartGame()">Restart Game</button>
-
-    <div id="dice-results"></div>
-    <div id="message"></div>
-
-    <script>
-        let gameState = {
-            player_positions: [0, 0],
-            scores: [0, 0],
-            coins: [0, 0],
-            current_player: 0,
-            dice_results: [],
-            message: ""
-        };
-
-        function hideAllDiceFaces() {
-            document.querySelectorAll('.dice').forEach(dice => dice.style.display = 'none');
-        }
-
-        function showDiceFace(color, roll) {
-            document.querySelector(`#${color}-dice .fa-dice-${roll}`).style.display = 'inline-block';
-        }
-
-        function switchPlayer() {
-            gameState.current_player = 1 - gameState.current_player;
-        }
-
-        function rollDice() {
-            hideAllDiceFaces();
-            let diceColors = ["red", "yellow", "blue", "green", "black"];
-            gameState.dice_results = diceColors.map(color => Math.floor(Math.random() * 6) + 1);
-
-            let diceResultsMessage = "";
-            gameState.dice_results.forEach((roll, index) => {
-                showDiceFace(diceColors[index], roll);
-                diceResultsMessage += diceColors[index].charAt(0).toUpperCase() + diceColors[index].slice(1) + ": " + roll + "\n";
-                
-                switch (diceColors[index]) {
-                    case "red":
-                        if (roll <= 2) gameState.player_positions[gameState.current_player] += 1;
-                        else if (roll <= 4) gameState.player_positions[gameState.current_player] += 2;
-                        break;
-                    case "yellow":
-                        if (roll <= 5) gameState.coins[gameState.current_player] += roll;
-                        gameState.scores[gameState.current_player] = Math.floor(gameState.coins[gameState.current_player] / 10) * 5;
-                        break;
-                    case "blue":
-                        if (roll >= 4 && roll <= 5) switchPlayer();
-                        break;
-                    case "green":
-                        if (roll <= 2) gameState.player_positions[gameState.current_player] += 1;
-                        break;
-                }
-            });
-
-            if (gameState.scores[gameState.current_player] >= 100) {
-                gameState.message = "Player " + (gameState.current_player + 1) + " wins!";
-            } else {
-                switchPlayer();
-            }
-
-            document.getElementById('dice-results').textContent = diceResultsMessage;
-            updateBoard();
-        }
-
-        function restartGame() {
-            gameState = {
-                player_positions: [0, 0],
-                scores: [0, 0],
-                coins: [0, 0],
-                current_player: 0,
-                dice_results: [],
-                message: ""
-            };
-            document.getElementById('dice-results').textContent = "";
-            updateBoard();
-        }
-
-        function updateBoard() {
-            const boardWidth = document.querySelector('.board').offsetWidth;
-            document.getElementById('player1').style.left = (gameState.player_positions[0] / 100) * boardWidth + 'px';
-            document.getElementById('player2').style.left = (gameState.player_positions[1] / 100) * boardWidth + 'px';
-            document.getElementById('message').textContent = "Player " + (gameState.current_player + 1) + " rolled:";
-        }
-
-        updateBoard();
-    </script>
-
+    <button onclick="rollDice()">Roll the Dice!</button>
+    <div id="results"></div>
+    <div id="gameBoard">
+        <div class="space" id="space0">🌲</div>
+        <div class="space" id="space1">🏞️</div>
+        <div class="space" id="space2">🏖️</div>
+        <div class="space" id="space3">🌋</div>
+        <div class="space" id="space4">🏔️</div>
+        <div class="space" id="space5">🏜️</div>
+        <div class="space" id="space6">🏙️</div>
+        <div class="space" id="space7">🌉</div>
+        <div class="space" id="space8">🚀</div>
+        <div class="space" id="space9">🌌</div>
+        <div class="space" id="space10">🌕</div>
+        <div class="space" id="space11">🌠</div>
+        <div class="space" id="space12">🪐</div>
+        <div class="space" id="space13">🌌</div>
+        <div class="space" id="space14">🚀</div>
+        <div class="space" id="space15">🌉</div>
+        <div class="space" id="space16">🏙️</div>
+        <div class="space" id="space17">🏜️</div>
+        <div class="space" id="space18">🎡</div>
+        <div class="space" id="space19">🏰</div>
+    </div>
+    <script src="script.js"></script>
 </body>
-
 </html>

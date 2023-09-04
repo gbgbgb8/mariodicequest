@@ -1,0 +1,29 @@
+body {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+button {
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+}
+#results {
+    margin-top: 20px;
+    font-size: 24px;
+}
+#gameBoard {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+.space {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+    margin: 2px;
+    font-size: 1.5em;
+}
