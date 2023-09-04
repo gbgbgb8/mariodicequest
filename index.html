@@ -67,7 +67,9 @@
         
         let diceResultsMessage = "";
         gameState.dice_results.forEach((roll, index) => {
-            document.getElementById(diceColors[index] + '-dice').className = 'fas dice fa-dice-' + roll;
+            let diceElement = document.getElementById(diceColors[index] + '-dice');
+            diceElement.classList.remove('fa-dice-one', 'fa-dice-two', 'fa-dice-three', 'fa-dice-four', 'fa-dice-five', 'fa-dice-six');
+            diceElement.classList.add('fa-dice-' + roll);
             diceResultsMessage += diceColors[index].charAt(0).toUpperCase() + diceColors[index].slice(1) + ": " + roll + "\\n";
 
             switch(diceColors[index]) {
