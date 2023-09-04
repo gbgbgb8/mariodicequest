@@ -12,12 +12,7 @@
         .dice { font-size: 24px; cursor: pointer; margin: 0 5px; }
         button { padding: 10px 20px; margin-top: 20px; font-size: 16px; cursor: pointer; }
         #message { font-size: 20px; margin-top: 20px; }
-        #dice-results { font-size: 16px; margin-top: 20px; }
-        #red-dice { color: red; }
-        #yellow-dice { color: yellow; }
-        #blue-dice { color: blue; }
-        #green-dice { color: green; }
-        #black-dice { color: black; }
+        #dice-results { font-size: 16px; margin-top: 20px; white-space: pre-line; }
     </style>
 </head>
 <body>
@@ -31,11 +26,11 @@
 </div>
 
 <div id="dice-container">
-    <i class="fas fa-dice-one dice" id="red-dice"></i>
-    <i class="fas fa-dice-one dice" id="yellow-dice"></i>
-    <i class="fas fa-dice-one dice" id="blue-dice"></i>
-    <i class="fas fa-dice-one dice" id="green-dice"></i>
-    <i class="fas fa-dice-one dice" id="black-dice"></i>
+    <i class="fas fa-dice-one dice" id="red-dice" style="color: red;"></i>
+    <i class="fas fa-dice-one dice" id="yellow-dice" style="color: yellow;"></i>
+    <i class="fas fa-dice-one dice" id="blue-dice" style="color: blue;"></i>
+    <i class="fas fa-dice-one dice" id="green-dice" style="color: green;"></i>
+    <i class="fas fa-dice-one dice" id="black-dice" style="color: black;"></i>
 </div>
 
 <button onclick="rollDice()">Roll Dice</button>
@@ -57,20 +52,18 @@
         const boardWidth = document.querySelector('.board').offsetWidth;
         document.getElementById('player1').style.left = (gameState.player_positions[0] / 100) * boardWidth + 'px';
         document.getElementById('player2').style.left = (gameState.player_positions[1] / 100) * boardWidth + 'px';
-        document.getElementById('message').textContent = gameState.message;
+        document.getElementById('message').textContent = "Player " + (gameState.current_player + 1) + " rolled:";
     }
 
     function rollDice() {
-        gameState.message = "Player " + (gameState.current_player + 1) + " rolled:";
         let diceColors = ["red", "yellow", "blue", "green", "black"];
         gameState.dice_results = diceColors.map(color => Math.floor(Math.random() * 6) + 1);
         
         let diceResultsMessage = "";
         gameState.dice_results.forEach((roll, index) => {
             let diceElement = document.getElementById(diceColors[index] + '-dice');
-            diceElement.className = `fas dice fa-dice-${roll}`;
-            diceElement.style.color = diceColors[index];
-            diceResultsMessage += diceColors[index].charAt(0).toUpperCase() + diceColors[index].slice(1) + ": " + roll + "\\n";
+            diceElement.className = `fas fa-dice-${roll} dice`;
+            diceResultsMessage += diceColors[index].charAt(0).toUpperCase() + diceColors[index].slice(1) + ": " + roll + "\n";
 
             switch(diceColors[index]) {
                 case "red":
