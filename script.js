@@ -31,25 +31,25 @@ function interpretRedDice(result, player) {
         case 1:
         case 2:
             player.score += 1;
-            explanation += "Move 1 space. ";
+            explanation += "You move 1 space. ";
             if (player.coins >= 3) {
-                explanation += "Option to spend 3 coins to move an additional space.";
+                explanation += "You have the option to spend 3 coins to move an additional space.";
             }
             break;
         case 3:
         case 4:
             player.score += 2;
-            explanation += "Move 2 spaces. ";
+            explanation += "You move 2 spaces. ";
             if (player.coins >= 2) {
-                explanation += "Option to spend 2 coins to prevent an opponent from moving next turn.";
+                explanation += "You have the option to spend 2 coins to prevent the other player from moving on their next turn.";
             }
             break;
         case 5:
-            explanation += "Gain a power-up.";
+            explanation += "You gained a power-up!";
             break;
         case 6:
             player.coins += roll(6);
-            explanation += "Roll the Yellow dice again for bonus coins.";
+            explanation += "You rolled the Yellow dice again and gained bonus coins.";
             break;
     }
     document.getElementById('rollExplanation').innerHTML += explanation + "<br>";
@@ -59,10 +59,10 @@ function interpretYellowDice(result, player) {
     let explanation = "Yellow (Coins): ";
     if (result >= 1 && result <= 4) {
         player.coins += result;
-        explanation += `Collect ${result} coins.`;
+        explanation += `You collected ${result} coins.`;
     } else {
         player.coins += 3;
-        explanation += "Steal up to 3 coins from an opponent.";
+        explanation += "You stole 3 coins from the opponent.";
     }
     document.getElementById('rollExplanation').innerHTML += explanation + "<br>";
 }
@@ -73,14 +73,14 @@ function interpretBlueDice(result, player) {
         case 4:
         case 5:
             if (player.coins >= 2) {
-                explanation += "Strong Current. Option to spend 2 coins to protect yourself.";
+                explanation += "Strong Current. You have the option to spend 2 coins to protect yourself.";
             } else {
                 player.score -= 1;
-                explanation += "Strong Current. Lost 1 space.";
+                explanation += "Strong Current. You lost 1 space.";
             }
             break;
         case 6:
-            explanation += "Blue Shell. Choose to push back any player by 2 spaces.";
+            explanation += "Blue Shell. You can push back any player by 2 spaces.";
             break;
         default:
             explanation += "Calm Waters. No effect.";
@@ -94,18 +94,18 @@ function interpretGreenDice(result, player) {
     switch (result) {
         case 1:
         case 2:
-            explanation += "Short pipe. Option to move forward 1 space or collect 3 coins.";
+            explanation += "Short pipe. You have the option to move forward 1 space or collect 3 coins.";
             break;
         case 3:
         case 4:
-            explanation += "Medium pipe. Option to skip your next turn and then move 3 spaces or gain a power-up.";
+            explanation += "Medium pipe. You can choose to skip your next turn and then move 3 spaces forward or gain a power-up.";
             break;
         case 5:
-            explanation += "Long pipe. Option to skip 2 turns and then move 5 spaces or gain 2 power-ups.";
+            explanation += "Long pipe. You can choose to skip 2 turns and then move 5 spaces forward or gain 2 power-ups.";
             break;
         case 6:
             player.score = 0;
-            explanation += "Warp pipe. Reset score to 0.";
+            explanation += "Warp pipe. Your score is reset to 0.";
             break;
     }
     document.getElementById('rollExplanation').innerHTML += explanation + "<br>";
@@ -119,17 +119,17 @@ function interpretBlackDice(result, player) {
         case 3:
             if (player.heldBlackDice === null) {
                 player.heldBlackDice = result;
-                explanation += "Plan ahead. Held the Black dice result for a future turn.";
+                explanation += "You can plan ahead and hold the Black dice result for a future turn.";
             } else {
-                explanation += "Plan ahead. Already holding a Black dice result.";
+                explanation += "You already have a held Black dice result.";
             }
             break;
         case 4:
         case 5:
-            explanation += "Bowser's Minion. Option to go back 1 space or force another player to go back 1 space.";
+            explanation += "Bowser's Minion. You can choose to move back 1 space or force the opponent to move back 1 space.";
             break;
         case 6:
-            explanation += "Bowser's Wrath. Lose half your coins or choose another player to lose half of theirs.";
+            explanation += "Bowser's Wrath. You can choose to lose half of your coins or make the opponent lose half of theirs.";
             break;
     }
     document.getElementById('rollExplanation').innerHTML += explanation + "<br>";
